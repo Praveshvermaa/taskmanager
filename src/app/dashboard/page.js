@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
-// ─── Decryption helper (client-side) ────────────────────────────
+
 import CryptoJS from 'crypto-js';
 
 function decryptData(ciphertext) {
@@ -16,7 +16,7 @@ function decryptData(ciphertext) {
   }
 }
 
-// ─── Task Modal Component ───────────────────────────────────────
+
 function TaskModal({ task, onClose, onSave }) {
   const [form, setForm] = useState({
     title: task?.title || '',
@@ -122,7 +122,7 @@ function TaskModal({ task, onClose, onSave }) {
   );
 }
 
-// ─── Task Card Component ────────────────────────────────────────
+
 function TaskCard({ task, onEdit, onDelete, index }) {
   const [deleting, setDeleting] = useState(false);
 
@@ -182,7 +182,7 @@ function TaskCard({ task, onEdit, onDelete, index }) {
   );
 }
 
-// ─── Pagination Component ───────────────────────────────────────
+
 function Pagination({ pagination, onPageChange }) {
   if (!pagination || pagination.totalPages <= 1) return null;
 
@@ -235,7 +235,7 @@ function Pagination({ pagination, onPageChange }) {
   );
 }
 
-// ─── Main Dashboard Page ────────────────────────────────────────
+
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState(null);
@@ -250,7 +250,7 @@ export default function DashboardPage() {
   const [message, setMessage] = useState(null);
   const searchTimeout = useRef(null);
 
-  // Fetch user info
+
   const fetchUser = useCallback(async () => {
     try {
       const res = await fetch('/api/auth/me');
@@ -265,7 +265,7 @@ export default function DashboardPage() {
     }
   }, [router]);
 
-  // Fetch tasks
+
   const fetchTasks = useCallback(async () => {
     setLoading(true);
     try {
@@ -307,13 +307,13 @@ export default function DashboardPage() {
     if (user) fetchTasks();
   }, [user, fetchTasks]);
 
-  // Show ephemeral message
+
   const showMessage = (text, type = 'success') => {
     setMessage({ text, type });
     setTimeout(() => setMessage(null), 3000);
   };
 
-  // Debounced search
+
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearch(value);
@@ -323,13 +323,12 @@ export default function DashboardPage() {
     }, 400);
   };
 
-  // Filter change
   const handleFilterChange = (e) => {
     setStatusFilter(e.target.value);
     setPage(1);
   };
 
-  // Create task
+
   const handleCreate = async (formData) => {
     const res = await fetch('/api/tasks', {
       method: 'POST',
@@ -342,7 +341,7 @@ export default function DashboardPage() {
     fetchTasks();
   };
 
-  // Update task
+
   const handleUpdate = async (formData) => {
     const res = await fetch(`/api/tasks/${editingTask._id}`, {
       method: 'PUT',
@@ -356,7 +355,7 @@ export default function DashboardPage() {
     fetchTasks();
   };
 
-  // Delete task
+
   const handleDelete = async (id) => {
     try {
       const res = await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
@@ -369,14 +368,14 @@ export default function DashboardPage() {
     }
   };
 
-  // Logout
+
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
     router.push('/login');
     router.refresh();
   };
 
-  // Stats
+
   const stats = {
     total: pagination?.total || 0,
     todo: tasks.filter((t) => t.status === 'todo').length,
@@ -386,10 +385,10 @@ export default function DashboardPage() {
 
   return (
     <div>
-      {/* Header */}
+
       <header className="dashboard-header">
         <div className="dashboard-header-inner">
-          <div className="dashboard-logo">✦ TaskFlow</div>
+          <div className="dashboard-logo"> TaskFlow</div>
           <div className="dashboard-user">
             {user && (
               <>
@@ -406,16 +405,16 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* Content */}
+
       <main className="dashboard-content">
-        {/* Toast message */}
+
         {message && (
           <div className={`alert alert-${message.type}`}>
             {message.type === 'success' ? '✓' : '⚠'} {message.text}
           </div>
         )}
 
-        {/* Stats */}
+
         <div className="stats-row">
           <div className="stat-card">
             <div className="stat-label">Total Tasks</div>
@@ -435,7 +434,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Toolbar */}
+
         <div className="toolbar">
           <div className="search-wrapper">
             <span className="search-icon">🔍</span>
@@ -470,7 +469,7 @@ export default function DashboardPage() {
           </button>
         </div>
 
-        {/* Tasks */}
+
         {loading ? (
           <div className="task-grid">
             {[...Array(6)].map((_, i) => (
@@ -520,7 +519,7 @@ export default function DashboardPage() {
         )}
       </main>
 
-      {/* Modal */}
+
       {showModal && (
         <TaskModal
           task={editingTask}
